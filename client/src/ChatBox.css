@@ -1,0 +1,8 @@
+.ChatBox {
+    background-color: var(--secondary-background);
+}
+
+.ChatBox input {
+    color: var(--text-color);
+    background-color: rgba(0, 0, 0, 0);
+}

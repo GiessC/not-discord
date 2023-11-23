@@ -1,7 +1,14 @@
-import "./App.css";
+import './App.css';
+import ChatBox from './ChatBox';
 
 function App() {
-  return <div className="App"></div>;
+    return (
+        <div>
+            <h1>Hello world!</h1>
+            <ChatBox />
+        </div>
+    );
 }
 
 export default App;
+
