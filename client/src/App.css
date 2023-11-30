@@ -3,6 +3,7 @@
 :root {
     --primary-background: #292c33;
     --secondary-background: #22252b;
+    --tertiary-background: #1b1d22;
     --text-color: #ffffff;
     --icon-color: #dadada;
     --icon-color-hover: #ffffff;
@@ -17,3 +18,7 @@ body {
     background-color: var(--primary-background);
 }
 
+#root {
+    height: 100%;
+    width: 100%;
+}

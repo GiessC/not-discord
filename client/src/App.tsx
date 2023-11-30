@@ -1,11 +1,15 @@
 import './App.css';
-import ChatBox from './ChatBox';
+import ChatBox from './components/chat/ChatBox';
+import ServerList from './components/serverList/ServerList';
 
 function App() {
     return (
-        <div>
-            <h1>Hello world!</h1>
+        <div className='w-full h-full flex'>
+            <ServerList />
             <ChatBox />
+            {/* <Modal title='Testing'>
+                <p>Testing</p>
+            </Modal> */}
         </div>
     );
 }
