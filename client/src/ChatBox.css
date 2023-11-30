@@ -13,4 +13,25 @@
 
 .ChatBox .UploadIcon {
     cursor: pointer;
+    color: var(--icon-color);
+}
+
+.ChatBox .UploadIcon:hover {
+    color: var(--icon-color-hover);
+}
+
+.ChatBox .GifIcon {
+    color: var(--icon-color);
+}
+
+.ChatBox .GifIcon:hover {
+    color: var(--icon-color-hover);
+}
+
+.ChatBox .EmojiIcon {
+    color: var(--icon-color);
+}
+
+.ChatBox .EmojiIcon:hover {
+    color: var(--icon-color-hover);
 }
