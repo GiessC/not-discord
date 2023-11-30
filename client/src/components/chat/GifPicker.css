@@ -1,0 +1,8 @@
+.GifPicker {
+    background-color: var(--secondary-background);
+}
+
+.GifPicker .SearchContainer {
+    background-color: var(--primary-background);
+}
+

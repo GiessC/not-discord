@@ -27,7 +27,7 @@ const ServerButton = ({
     return (
         <div className='flex w-full'>
             <div
-                className={`StatusIndicator rounded fixed bg-white w-1 transition-all duration-200 ease-in-out transform ${
+                className={`StatusIndicator focus:outline-none rounded fixed bg-white w-1 transition-all duration-200 ease-in-out transform ${
                     selected === buttonId
                         ? 'top-4 h-8'
                         : isHovered
@@ -44,7 +44,8 @@ const ServerButton = ({
                     }`}
                     onClick={() => setSelected(buttonId)}
                     onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}>
+                    onMouseLeave={() => setIsHovered(false)}
+                >
                     <img
                         className='w-12 h-12 overflow-hidden'
                         src={isHovered ? hoverIcon : icon}
@@ -57,3 +58,4 @@ const ServerButton = ({
 };
 
 export default ServerButton;
+
