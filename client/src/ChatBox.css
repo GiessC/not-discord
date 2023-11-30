@@ -6,3 +6,11 @@
     color: var(--text-color);
     background-color: rgba(0, 0, 0, 0);
 }
+
+.ChatBox .Upload {
+    display: none;
+}
+
+.ChatBox .UploadIcon {
+    cursor: pointer;
+}
