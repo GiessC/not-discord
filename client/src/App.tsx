@@ -1,10 +1,11 @@
 import './App.css';
 import ChatBox from './ChatBox';
+import ServerList from './ServerList';
 
 function App() {
     return (
-        <div>
-            <h1>Hello world!</h1>
+        <div className='w-full h-full flex'>
+            <ServerList />
             <ChatBox />
         </div>
     );

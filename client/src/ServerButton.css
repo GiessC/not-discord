@@ -1,0 +1,7 @@
+.ServerButton {
+    background-color: var(--primary-background);
+}
+
+.ServerButton:hover {
+    border-radius: 0.75rem;
+}
