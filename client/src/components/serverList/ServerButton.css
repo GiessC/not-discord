@@ -1,0 +1,25 @@
+.ServerButton {
+    background-color: var(--primary-background);
+    -webkit-transition: border-radius 0.2s;
+    transition: border-radius 0.2s;
+    border-radius: 50%;
+}
+
+.ServerButton img {
+    -webkit-transition: border-radius 0.2s;
+    transition: border-radius 0.2s;
+}
+
+.ServerButton:hover,
+.ServerButton.Selected {
+    border-radius: 0.75rem;
+}
+
+.ServerButton img {
+    border-radius: inherit;
+}
+
+.StatusIndicator {
+    -webkit-transition: height 1s ease;
+    transition: height 1s ease;
+}
