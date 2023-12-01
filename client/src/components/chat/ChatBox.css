@@ -4,7 +4,7 @@
 
 .ChatBox input {
     color: var(--text-color);
-    background-color: rgba(0, 0, 0, 0);
+    background-color: #000000;
 }
 
 .ChatBox .Upload {

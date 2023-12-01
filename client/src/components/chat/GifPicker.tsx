@@ -1,8 +1,11 @@
-import './GifPicker.css';
-import { BsStarFill as FavoritesIcon } from 'react-icons/bs';
+import { useEffect, useState } from 'react';
+import {
+    BsStarFill as FavoritesIcon,
+    BsSearch as SearchIcon,
+} from 'react-icons/bs';
 import { PiTrendUpBold as TrendingIcon } from 'react-icons/pi';
-import { BsSearch as SearchIcon } from 'react-icons/bs';
-import { useState } from 'react';
+import TenorApi from '../../tenor/TenorApi';
+import './GifPicker.css';
 
 type GifCardColor = 'green' | 'red';
 
@@ -23,8 +26,9 @@ const GifCard = ({
         <div
             className={`GifCard mx-1 w-1/2 flex justify-center items-center h-20 rounded-md cursor-pointer ${
                 color === 'green' && 'bg-green-600 hover:bg-green-700'
-            } ${color === 'red' && 'bg-red-600 hover:bg-red-700'} ${className}`}
-        >
+            } ${
+                color === 'red' && 'bg-red-600 hover:bg-red-700'
+            } ${className}`}>
             {icon}
             <span className='font-bold'>{title}</span>
         </div>
@@ -33,6 +37,10 @@ const GifCard = ({
 
 const GifPicker = () => {
     const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false);
+
+    useEffect(() => {
+        const api = TenorApi.getInstance();
+    }, []);
 
     return (
         <div className='GifPicker rounded-md w-1/4 p-2 absolute left-1/2 top-1/4'>
@@ -43,8 +51,7 @@ const GifPicker = () => {
                             ? 'border-blue-500'
                             : 'border-transparent'
                     }`}
-                    onClick={() => setIsSearchFocused(true)}
-                >
+                    onClick={() => setIsSearchFocused(true)}>
                     <SearchIcon className='m-3' />
                     <input
                         className='Search w-full h-full bg-inherit focus:outline-none'
@@ -72,4 +79,3 @@ const GifPicker = () => {
 };
 
 export default GifPicker;
-

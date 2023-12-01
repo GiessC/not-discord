@@ -1,6 +1,7 @@
 import ServerButton from './ServerButton';
 
 interface DMButtonProps {
+    className?: string;
     buttonId: number;
     selected: number;
     setSelected: React.Dispatch<React.SetStateAction<number>>;
@@ -8,6 +9,7 @@ interface DMButtonProps {
 }
 
 const DMButton = ({
+    className = '',
     buttonId,
     selected,
     setSelected,
@@ -15,6 +17,7 @@ const DMButton = ({
 }: DMButtonProps) => {
     return (
         <ServerButton
+            className={className}
             buttonId={buttonId}
             selected={selected}
             setSelected={setSelected}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import './ServerButton.css';
 
 interface ServerButtonProps {
+    className?: string;
     buttonId: number;
     serverId?: string;
     serverName?: string;
@@ -13,6 +14,7 @@ interface ServerButtonProps {
 }
 
 const ServerButton = ({
+    className = '',
     buttonId,
     serverId = '',
     serverName = '',
@@ -25,7 +27,7 @@ const ServerButton = ({
     const [isHovered, setIsHovered] = useState(false);
 
     return (
-        <div className='flex w-full'>
+        <div className={`flex w-full ${className}`}>
             <div
                 className={`StatusIndicator focus:outline-none rounded fixed bg-white w-1 transition-all duration-200 ease-in-out transform ${
                     selected === buttonId
@@ -39,13 +41,12 @@ const ServerButton = ({
             />
             <div className='flex mx-auto justify-center'>
                 <button
-                    className={`ServerButton w-12 h-12 ${
+                    className={`ServerButton outline-none focus-visible:outline-2 focus-visible:outline-blue-500 w-12 h-12 ${
                         selected === buttonId ? 'Selected' : ''
                     }`}
                     onClick={() => setSelected(buttonId)}
                     onMouseEnter={() => setIsHovered(true)}
-                    onMouseLeave={() => setIsHovered(false)}
-                >
+                    onMouseLeave={() => setIsHovered(false)}>
                     <img
                         className='w-12 h-12 overflow-hidden'
                         src={isHovered ? hoverIcon : icon}
@@ -58,4 +59,3 @@ const ServerButton = ({
 };
 
 export default ServerButton;
-
