@@ -5,10 +5,11 @@ import {
     BsSearch as SearchIcon,
 } from 'react-icons/bs';
 import { PiTrendUpBold as TrendingIcon } from 'react-icons/pi';
+import TenorApi from '../../api/tenor/TenorApi';
+import UserApi from '../../api/user/UserApi';
 import Gif from '../../models/Gif';
-import TenorApi from '../../tenor/TenorApi';
-import Skeleton from '../common/skeleton/Skeleton';
 import './GifPicker.css';
+import GifSearchResult from './GifSearchResult';
 
 type GifCardColor = 'green' | 'red';
 
@@ -45,6 +46,9 @@ const GifPicker = () => {
     const [lastSearch, setLastSearch] = useState<string | null>(null);
     const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false);
     const [searchResults, setSearchResults] = useState<Gif[]>([]);
+    const [favoriteGifs, setFavoriteGifs] = useState<Set<string>>(
+        new Set<string>(),
+    );
 
     useEffect(() => {
         if (!searchQuery) {
@@ -61,11 +65,20 @@ const GifPicker = () => {
             setLastSearch(searchQuery);
             const gifs: Gif[] = response?.data?.results;
             console.debug(gifs);
-            setSearchResults(gifs);
+            setSearchResults(gifs || []);
         };
 
         searchGifs();
     }, [searchQuery, lastSearch]);
+
+    useEffect(() => {
+        UserApi.getInstance()
+            .getFavoriteGIFs()
+            .then((favoriteGifs: Set<string>) => {
+                setFavoriteGifs(favoriteGifs);
+                console.debug(favoriteGifs);
+            });
+    }, []);
 
     const handleSearchChange = async (
         e: React.ChangeEvent<HTMLInputElement>,
@@ -78,6 +91,25 @@ const GifPicker = () => {
         setSearchQuery('');
         setSearchResults([]);
         setLastSearch(null);
+    };
+
+    const favoriteGIF = async (gifId: string) => {
+        try {
+            await UserApi.getInstance().favoriteGIF(gifId);
+            setFavoriteGifs((prevFavoriteGifs) => {
+                const newFavoriteGifs = new Set<string>(prevFavoriteGifs);
+                if (newFavoriteGifs.has(gifId)) {
+                    newFavoriteGifs.delete(gifId);
+                } else {
+                    newFavoriteGifs.add(gifId);
+                }
+                return newFavoriteGifs;
+            });
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error(error.message);
+            }
+        }
     };
 
     return (
@@ -119,45 +151,30 @@ const GifPicker = () => {
                 />
             </div>
             <div
-                // TODO: search results are being displayed horizontally instead of vertically with 2 columns.
                 className={`GifSearchResults flex flex-row flex-1 overflow-y-scroll max-h-96 ${
                     searchResults.length === 0 && 'hidden'
                 }`}>
-                <div className='GifSearchResultColumn grid flex-1 gap-2 mr-2 auto-rows-min'>
+                <div className='GifSearchResultColumn relative grid flex-1 gap-2 mr-2 auto-rows-min'>
                     {searchResults.map((gif: Gif, index: number) =>
                         index % 2 === 0 ? (
-                            <Skeleton
+                            <GifSearchResult
                                 key={gif.id}
-                                className='GifSearchResult h-full w-full break-inside-avoid-column rounded-md'>
-                                <img
-                                    className='rounded-md w-full'
-                                    key={gif.id}
-                                    src={gif.media_formats['tinygif']?.url}
-                                    alt={gif.title}
-                                    height={
-                                        gif.media_formats['tinygif']?.dims[1]
-                                    }
-                                />
-                            </Skeleton>
+                                favorited={favoriteGifs.has(gif.id)}
+                                favoriteGIF={favoriteGIF}
+                                gif={gif}
+                            />
                         ) : null,
                     )}
                 </div>
-                <div className='GifSearchResultColumn grid flex-1 gap-y-2 auto-rows-min'>
+                <div className='GifSearchResultColumn relative grid flex-1 gap-y-2 auto-rows-min'>
                     {searchResults.map((gif: Gif, index: number) =>
                         index % 2 !== 0 ? (
-                            <Skeleton
+                            <GifSearchResult
                                 key={gif.id}
-                                className='GifSearchResult h-full w-full break-inside-avoid-column rounded-md'>
-                                <img
-                                    className='rounded-md w-full'
-                                    key={gif.id}
-                                    src={gif.media_formats['tinygif']?.url}
-                                    alt={gif.title}
-                                    height={
-                                        gif.media_formats['tinygif']?.dims[1]
-                                    }
-                                />
-                            </Skeleton>
+                                favorited={favoriteGifs.has(gif.id)}
+                                favoriteGIF={favoriteGIF}
+                                gif={gif}
+                            />
                         ) : null,
                     )}
                 </div>

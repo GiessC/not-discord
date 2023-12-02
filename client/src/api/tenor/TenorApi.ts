@@ -11,7 +11,9 @@ export default class TenorApi {
     ) {
         try {
             const response = await axios.get(
-                `http://localhost:5000/tenor/search?searchQuery=${searchQuery}${
+                `${
+                    process.env.REACT_APP_API_URL
+                }/tenor/search?searchQuery=${searchQuery}${
                     locale ? `&locale=${locale}` : ''
                 }${contentFilter ? `&contentFilter=${contentFilter}` : ''}${
                     position ? `&position=${position}` : ''

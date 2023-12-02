@@ -10,6 +10,10 @@
     cursor: pointer;
 }
 
+.GifSearchResult:not(:hover) .FavoriteButton {
+    display: none;
+}
+
 .GifSearchResultColumn {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
