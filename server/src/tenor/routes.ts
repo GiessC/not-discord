@@ -7,7 +7,7 @@ import GifSearchApi from './GifDataType';
 const TENOR_API_URL = 'https://tenor.googleapis.com/v2';
 const DEFAULT_LOCALE = 'en_US';
 const VALID_CONTENT_FILTERS = new Set<string>(['off', 'low', 'medium', 'high']);
-const DEFAULT_CONTENT_FILTER = 'low';
+const DEFAULT_CONTENT_FILTER = 'off';
 const SEARCH_LIMIT = 20;
 const MEDIA_FILTER = 'gif, tinygif';
 

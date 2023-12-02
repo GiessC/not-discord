@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+    BsXCircleFill as DeleteIcon,
     BsStarFill as FavoritesIcon,
     BsSearch as SearchIcon,
 } from 'react-icons/bs';
 import { PiTrendUpBold as TrendingIcon } from 'react-icons/pi';
 import Gif from '../../models/Gif';
 import TenorApi from '../../tenor/TenorApi';
+import Skeleton from '../common/skeleton/Skeleton';
 import './GifPicker.css';
 
 type GifCardColor = 'green' | 'red';
@@ -39,20 +41,43 @@ const GifCard = ({
 };
 
 const GifPicker = () => {
-    const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string>('');
     const [lastSearch, setLastSearch] = useState<string | null>(null);
+    const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false);
     const [searchResults, setSearchResults] = useState<Gif[]>([]);
+
+    useEffect(() => {
+        if (!searchQuery) {
+            setLastSearch(null);
+            setSearchResults([]);
+            return;
+        }
+        if (lastSearch && searchQuery.trim() === lastSearch) return;
+
+        const searchGifs = async () => {
+            const response = await TenorApi.getInstance().search(
+                searchQuery.trim(),
+            );
+            setLastSearch(searchQuery);
+            const gifs: Gif[] = response?.data?.results;
+            console.debug(gifs);
+            setSearchResults(gifs);
+        };
+
+        searchGifs();
+    }, [searchQuery, lastSearch]);
 
     const handleSearchChange = async (
         e: React.ChangeEvent<HTMLInputElement>,
     ) => {
-        const value: string = e.target?.value.trim() || '';
-        if (value === lastSearch) return;
-        const response = await TenorApi.getInstance().search(value);
-        setLastSearch(value);
-        const gifs: Gif[] = response?.data?.results;
-        console.debug(gifs);
-        setSearchResults(gifs);
+        const value: string = e.target?.value || '';
+        setSearchQuery(value);
+    };
+
+    const clearSearch = () => {
+        setSearchQuery('');
+        setSearchResults([]);
+        setLastSearch(null);
     };
 
     return (
@@ -75,10 +100,15 @@ const GifPicker = () => {
                         onFocus={() => setIsSearchFocused(true)}
                         onBlur={() => setIsSearchFocused(false)}
                         onChange={handleSearchChange}
+                        value={searchQuery}
                     />
+                    <button className='mx-3' onClick={clearSearch}>
+                        <DeleteIcon />
+                    </button>
                 </div>
             </div>
-            <div className={`List flex ${Boolean(searchResults) && 'hidden'}`}>
+            <div
+                className={`List flex ${searchResults.length > 0 && 'hidden'}`}>
                 <GifCard
                     icon={<FavoritesIcon className='mr-1' />}
                     title='Favorites'
@@ -90,18 +120,47 @@ const GifPicker = () => {
             </div>
             <div
                 // TODO: search results are being displayed horizontally instead of vertically with 2 columns.
-                className={`GifSearchResults h-20 overflow-y-scroll overflow-x-hidden columns-2 gap-0 ${
-                    !searchResults && 'hidden'
+                className={`GifSearchResults flex flex-row flex-1 overflow-y-scroll max-h-96 ${
+                    searchResults.length === 0 && 'hidden'
                 }`}>
-                {searchResults.map((gif: Gif) => (
-                    <img
-                        className='GifSearchResult break-inside-avoid-column rounded-md m-2'
-                        key={gif.id}
-                        src={gif.media_formats['tinygif']?.url}
-                        alt={gif.title}
-                        height={gif.media_formats['tinygif']?.dims[1]}
-                    />
-                ))}
+                <div className='GifSearchResultColumn grid flex-1 gap-2 mr-2 auto-rows-min'>
+                    {searchResults.map((gif: Gif, index: number) =>
+                        index % 2 === 0 ? (
+                            <Skeleton
+                                key={gif.id}
+                                className='GifSearchResult h-full w-full break-inside-avoid-column rounded-md'>
+                                <img
+                                    className='rounded-md w-full'
+                                    key={gif.id}
+                                    src={gif.media_formats['tinygif']?.url}
+                                    alt={gif.title}
+                                    height={
+                                        gif.media_formats['tinygif']?.dims[1]
+                                    }
+                                />
+                            </Skeleton>
+                        ) : null,
+                    )}
+                </div>
+                <div className='GifSearchResultColumn grid flex-1 gap-y-2 auto-rows-min'>
+                    {searchResults.map((gif: Gif, index: number) =>
+                        index % 2 !== 0 ? (
+                            <Skeleton
+                                key={gif.id}
+                                className='GifSearchResult h-full w-full break-inside-avoid-column rounded-md'>
+                                <img
+                                    className='rounded-md w-full'
+                                    key={gif.id}
+                                    src={gif.media_formats['tinygif']?.url}
+                                    alt={gif.title}
+                                    height={
+                                        gif.media_formats['tinygif']?.dims[1]
+                                    }
+                                />
+                            </Skeleton>
+                        ) : null,
+                    )}
+                </div>
             </div>
         </div>
     );
