@@ -6,3 +6,6 @@
     background-color: var(--primary-background);
 }
 
+.GifSearchResult {
+    cursor: pointer;
+}

@@ -1,3 +1,4 @@
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Express } from 'express';
 import { TenorSearch } from './tenor/routes';
@@ -6,6 +7,8 @@ dotenv.config();
 
 const app: Express = express();
 const port: number = 5000;
+
+app.use(cors());
 
 app.get('/tenor/search', TenorSearch);
 

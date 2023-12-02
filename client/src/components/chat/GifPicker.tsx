@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
     BsStarFill as FavoritesIcon,
     BsSearch as SearchIcon,
 } from 'react-icons/bs';
 import { PiTrendUpBold as TrendingIcon } from 'react-icons/pi';
+import Gif from '../../models/Gif';
 import TenorApi from '../../tenor/TenorApi';
 import './GifPicker.css';
 
@@ -15,6 +16,8 @@ interface GifCardProps {
     title: string;
     color?: GifCardColor;
 }
+
+const INPUT_KEYS = 'abcdefghijklmnopqrstuvwxyz1234567890';
 
 const GifCard = ({
     className = '',
@@ -37,10 +40,20 @@ const GifCard = ({
 
 const GifPicker = () => {
     const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false);
+    const [lastSearch, setLastSearch] = useState<string | null>(null);
+    const [searchResults, setSearchResults] = useState<Gif[]>([]);
 
-    useEffect(() => {
-        const api = TenorApi.getInstance();
-    }, []);
+    const handleSearchChange = async (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        const value: string = e.target?.value.trim() || '';
+        if (value === lastSearch) return;
+        const response = await TenorApi.getInstance().search(value);
+        setLastSearch(value);
+        const gifs: Gif[] = response?.data?.results;
+        console.debug(gifs);
+        setSearchResults(gifs);
+    };
 
     return (
         <div className='GifPicker rounded-md w-1/4 p-2 absolute left-1/2 top-1/4'>
@@ -61,10 +74,11 @@ const GifPicker = () => {
                         placeholder='Search GIFs'
                         onFocus={() => setIsSearchFocused(true)}
                         onBlur={() => setIsSearchFocused(false)}
+                        onChange={handleSearchChange}
                     />
                 </div>
             </div>
-            <div className='List flex'>
+            <div className={`List flex ${Boolean(searchResults) && 'hidden'}`}>
                 <GifCard
                     icon={<FavoritesIcon className='mr-1' />}
                     title='Favorites'
@@ -73,6 +87,21 @@ const GifPicker = () => {
                     icon={<TrendingIcon className='mr-1' />}
                     title='Trending'
                 />
+            </div>
+            <div
+                // TODO: search results are being displayed horizontally instead of vertically with 2 columns.
+                className={`GifSearchResults h-20 overflow-y-scroll overflow-x-hidden columns-2 gap-0 ${
+                    !searchResults && 'hidden'
+                }`}>
+                {searchResults.map((gif: Gif) => (
+                    <img
+                        className='GifSearchResult break-inside-avoid-column rounded-md m-2'
+                        key={gif.id}
+                        src={gif.media_formats['tinygif']?.url}
+                        alt={gif.title}
+                        height={gif.media_formats['tinygif']?.dims[1]}
+                    />
+                ))}
             </div>
         </div>
     );
