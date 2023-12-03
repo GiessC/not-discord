@@ -1,3 +1,4 @@
+import { DynamoDBClient, ListTablesCommand } from '@aws-sdk/client-dynamodb';
 import { Request, Response } from 'express';
 import APIErrorResponse from '../APIResponseType';
 
@@ -15,6 +16,19 @@ export const FavoriteGifs = async (req: Request, res: Response) => {
 };
 
 export const FavoriteGif = async (req: Request, res: Response) => {
+    const dbclient = new DynamoDBClient({
+        region: process.env.AWS_DEFAULT_REGION,
+        endpoint: 'http://localhost:8000',
+    });
+    try {
+        const results = await dbclient.send(new ListTablesCommand({}));
+        results.TableNames.forEach((item) => {
+            console.log(item);
+        });
+    } catch (error) {
+        console.error(error);
+    }
+
     if (req.query.testing === 'true') {
         const gifId = req.params.gifId;
 
